@@ -7,12 +7,40 @@
 
 import SwiftUI
 
+struct ExpenseItem{
+    let name: String
+    let type: String
+    let ammount: Double
+}
+
+
+@Observable
+class Expense{
+    var item = [ExpenseItem]()
+}
+
 struct ContentView: View {
+    
+    @State private var expenses = Expense()
+    
     var body: some View {
-        VStack {
-            Text("this is a test")
+        NavigationStack{
+            List{
+                ForEach(expenses.item, id: \.name){ item in
+                    Text(item.name)
+                    
+                }
+            }
+            .navigationTitle("iExpense")
+            .toolbar{
+                Button("add expense", systemImage: "plus"){
+                    let expense = ExpenseItem(name: "Test", type: "Personal", ammount: 5)
+                    expenses.item.append(expense)
+                }
+            }
+            
         }
-        .padding()
+        
     }
 }
 
