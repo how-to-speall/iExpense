@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ExpenseItem{
+
+struct ExpenseItem: Identifiable, Codable {
+    var id = UUID()
     let name: String
     let type: String
     let ammount: Double
@@ -16,18 +18,43 @@ struct ExpenseItem{
 
 @Observable
 class Expense{
-    var item = [ExpenseItem]()
+    var item = [ExpenseItem](){
+        didSet{
+            if let encoded = try? JSONEncoder().encode(item){
+                UserDefaults.standard.set(encoded, forKey: "Items")
+            }
+        }
+    }
+    init(){
+        if let savedItems = UserDefaults.standard.data(forKey: "Items"){
+            if let decodedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems){
+                item = decodedItems
+                return
+            }
+        }
+        item = []
+    }
 }
 
 struct ContentView: View {
     
     @State private var expenses = Expense()
+    @State private var showingAddExpense = false
     
     var body: some View {
         NavigationStack{
             List{
-                ForEach(expenses.item, id: \.name){ item in
-                    Text(item.name)
+                ForEach(expenses.item){ item in
+                    HStack{
+                        VStack(alignment: .leading){
+                            Text(item.name)
+                                .font(.headline)
+                            Text(item.type)
+                        }
+                        Spacer()
+                        
+                        Text(item.ammount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                    }
                     
                 }
                 .onDelete(perform: removeItems)
@@ -35,17 +62,18 @@ struct ContentView: View {
             .navigationTitle("iExpense")
             .toolbar{
                 Button("add expense", systemImage: "plus"){
-                    let expense = ExpenseItem(name: "Test", type: "Personal", ammount: 5)
-                    expenses.item.append(expense)
+                    showingAddExpense = true
                     
                 }
                 
             }
+            .sheet(isPresented: $showingAddExpense){
+                addView(expenses: expenses)
+            }
 
         }
         
-        
-        }
+    }
     func removeItems(at offsets: IndexSet){
         expenses.item.remove(atOffsets: offsets)
     }

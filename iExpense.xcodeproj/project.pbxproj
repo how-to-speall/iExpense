@@ -11,6 +11,7 @@
 		7DF3C0E42C76869000B46B0E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF3C0E32C76869000B46B0E /* ContentView.swift */; };
 		7DF3C0E62C76869200B46B0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DF3C0E52C76869200B46B0E /* Assets.xcassets */; };
 		7DF3C0E92C76869200B46B0E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DF3C0E82C76869200B46B0E /* Preview Assets.xcassets */; };
+		7DF3C0F02C7F313200B46B0E /* addView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF3C0EF2C7F313200B46B0E /* addView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		7DF3C0E32C76869000B46B0E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7DF3C0E52C76869200B46B0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DF3C0E82C76869200B46B0E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7DF3C0EF2C7F313200B46B0E /* addView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				7DF3C0E12C76869000B46B0E /* iExpenseApp.swift */,
 				7DF3C0E32C76869000B46B0E /* ContentView.swift */,
+				7DF3C0EF2C7F313200B46B0E /* addView.swift */,
 				7DF3C0E52C76869200B46B0E /* Assets.xcassets */,
 				7DF3C0E72C76869200B46B0E /* Preview Content */,
 			);
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DF3C0F02C7F313200B46B0E /* addView.swift in Sources */,
 				7DF3C0E42C76869000B46B0E /* ContentView.swift in Sources */,
 				7DF3C0E22C76869000B46B0E /* iExpenseApp.swift in Sources */,
 			);
