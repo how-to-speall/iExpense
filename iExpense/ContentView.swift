@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct ExpenseItem: Identifiable, Codable {
+struct ExpenseItem: Identifiable, Codable, Equatable {
     var id = UUID()
     let name: String
     let type: String
@@ -18,6 +18,18 @@ struct ExpenseItem: Identifiable, Codable {
 
 @Observable
 class Expense{
+    var personal: [ExpenseItem]{
+        item.filter {
+            $0.type == "Personal"
+        }
+    }
+    
+    var business: [ExpenseItem]{
+        item.filter {
+            $0.type == "Business"
+        }
+    }
+    
     var item = [ExpenseItem](){
         didSet{
             if let encoded = try? JSONEncoder().encode(item){
@@ -36,6 +48,8 @@ class Expense{
     }
 }
 
+
+
 struct ContentView: View {
     
     @State private var expenses = Expense()
@@ -43,39 +57,90 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack{
-            List{
-                ForEach(expenses.item){ item in
-                    HStack{
-                        VStack(alignment: .leading){
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.type)
+            VStack(alignment:.leading){
+                Text("iExpense").font(.largeTitle).bold().padding()
+                
+                HStack{
+                    VStack{
+                        Text("Personal").font(.headline)
+                        Form{
+                            
+                            ForEach(expenses.personal){ item in
+                                HStack{
+                                    VStack(alignment: .leading){
+                                        Text(item.name)
+                                            .font(.headline)
+                                        Text(item.type)
+                                    }
+                                    Spacer()
+                                    
+                                    Text(item.ammount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                }
+                                
+                            }
+                            
+                            .onDelete(perform: removePersonalItems)
                         }
-                        Spacer()
-                        
-                        Text(item.ammount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                     }
-                    
+                    VStack{
+                        Text("Business").font(.headline)
+                        Form{
+                            ForEach(expenses.business){ item in
+                                HStack{
+                                    VStack(alignment: .leading){
+                                        Text(item.name)
+                                            .font(.headline)
+                                        Text(item.type)
+                                    }
+                                    Spacer()
+                                    
+                                    Text(item.ammount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                }
+                                
+                            }
+                            .onDelete(perform: removeBusinessItems)
+                        }
+                    }
+                    //.navigationTitle("iExpense")
+                    .toolbar{
+                        Button("add expense", systemImage: "plus"){
+                            showingAddExpense = true
+                            
+                        }
+                        
+                    }
                 }
-                .onDelete(perform: removeItems)
-            }
-            .navigationTitle("iExpense")
-            .toolbar{
-                Button("add expense", systemImage: "plus"){
-                    showingAddExpense = true
-                    
+                .sheet(isPresented: $showingAddExpense){
+                    addView(expenses: expenses)
                 }
                 
             }
-            .sheet(isPresented: $showingAddExpense){
-                addView(expenses: expenses)
-            }
-
         }
         
     }
-    func removeItems(at offsets: IndexSet){
-        expenses.item.remove(atOffsets: offsets)
+    
+    //a little complicated for me tbh if i had to make this from scratch would prob just make 2 differnet
+    //classes but that would not be scalable at all and very non efficent so ig i just gotta learn this
+    func removeItems(at offsets: IndexSet, in inputArray: [ExpenseItem]) {
+        var objectsToDelete = IndexSet()
+
+        for offset in offsets {
+            let item = inputArray[offset]
+
+            if let index = expenses.item.firstIndex(of: item) {
+                objectsToDelete.insert(index)
+            }
+        }
+
+        expenses.item.remove(atOffsets: objectsToDelete)
+    }
+    
+    func removePersonalItems(at offsets: IndexSet) {
+        removeItems(at: offsets, in: expenses.personal)
+    }
+
+    func removeBusinessItems(at offsets: IndexSet) {
+        removeItems(at: offsets, in: expenses.business)
     }
 }
 
